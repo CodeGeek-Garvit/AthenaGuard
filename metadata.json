@@ -1,0 +1,10 @@
+{
+  "name": "AthenaGuard",
+  "description": "Professional sports media protection platform with real-time monitoring and forensic manual verification.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "vision"
+  ]
+}

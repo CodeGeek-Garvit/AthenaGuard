@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Application user profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role", "createdAt"]
+    },
+    "Asset": {
+      "title": "Asset",
+      "description": "Original media asset to protect",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "url": { "type": "string" },
+        "type": { "type": "string" },
+        "fingerprint": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string" },
+        "violationCount": { "type": "number" }
+      },
+      "required": ["title", "url", "type", "fingerprint", "createdAt", "status", "violationCount"]
+    },
+    "Incident": {
+      "title": "Incident",
+      "description": "Detected violation incident",
+      "type": "object",
+      "properties": {
+        "originalAssetId": { "type": "string" },
+        "detectedUrl": { "type": "string" },
+        "platform": { "type": "string" },
+        "transformation": { "type": "array", "items": { "type": "string" } },
+        "similarityScore": { "type": "number" },
+        "confidence": { "type": "string" },
+        "recommendedAction": { "type": "string" },
+        "detectedAt": { "type": "string", "format": "date-time" },
+        "posterAccount": { "type": "string" },
+        "status": { "type": "string" },
+        "aiExplanation": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["originalAssetId", "detectedUrl", "platform", "similarityScore", "confidence", "recommendedAction", "detectedAt", "status", "userId"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "assets/{assetId}": {
+      "schema": "Asset",
+      "description": "Protected media assets"
+    },
+    "incidents/{incidentId}": {
+      "schema": "Incident",
+      "description": "Detected incidents"
+    }
+  }
+}

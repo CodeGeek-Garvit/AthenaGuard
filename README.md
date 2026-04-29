@@ -15,7 +15,7 @@
 
 > **AthenaGuard** detects unauthorized sports media — even after cropping, mirroring, meme-editing, or compression. Traditional systems fail on transformed content. AthenaGuard doesn't.
 
-[🚀 Live Demo](https://athenaguard-314163581128.asia-east1.run.app) • [📂 GitHub](https://github.com/CodeGeek-Garvit/AthenaGuard1) • [📖 Docs](#) • [🎬 Demo Video](https://drive.google.com/drive/folders/13stWGAFoKUos1EpqkAKr7naJpguyLT-d?usp=sharing)
+[🚀 Live Demo](https://athenaguard-314163581128.asia-east1.run.app) • [📂 GitHub](https://github.com/CodeGeek-Garvit/AthenaGuard1) • [📖 Docs](https://beautiful-gecko-8c0781.netlify.app/) • [🎬 Demo Video](https://drive.google.com/drive/folders/13stWGAFoKUos1EpqkAKr7naJpguyLT-d?usp=sharing)
 
 </div>
 

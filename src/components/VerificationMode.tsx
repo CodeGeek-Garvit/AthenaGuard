@@ -6,6 +6,7 @@ import { detectionService } from '../services/DetectionService';
 import { explainViolation } from '../lib/gemini';
 import { cn } from '../lib/utils';
 import { useAuth } from '../lib/AuthContext';
+import { jsPDF } from 'jspdf';
 
 export default function VerificationMode() {
   const [file, setFile] = useState<File | null>(null);
@@ -244,24 +245,57 @@ export default function VerificationMode() {
                     const reportId = `REP-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
                     await new Promise(resolve => setTimeout(resolve, 1500));
                     
-                    const content = `ATHENA GUARD - MEDIA VERIFICATION REPORT\n` +
-                                    `----------------------------------------\n` +
-                                    `REPORT ID: ${reportId}\n` +
-                                    `USER: ${profile?.email}\n` +
-                                    `MATCH CONFIDENCE: ${result?.confidence}\n` +
-                                    `ACTION: ${result?.recommendedAction}\n` +
-                                    `TIMESTAMP: ${new Date().toLocaleString()}`;
-                    
-                    const element = document.createElement("a");
-                    const file = new Blob([content], {type: 'text/plain'});
-                    element.href = URL.createObjectURL(file);
-                    element.download = `Verification_Report_${reportId}.pdf`;
-                    document.body.appendChild(element);
-                    element.click();
-                    document.body.removeChild(element);
-
-                    detectionService.addNotification(`Forensic Report ${reportId} for ${profile?.email} has been generated.`);
-                    setIsGeneratingReport(false);
+                    try {
+                      const doc = new jsPDF();
+                      
+                      // Heading
+                      doc.setFontSize(22);
+                      doc.setTextColor(16, 185, 129);
+                      doc.text("ATHENA GUARD", 20, 20);
+                      
+                      doc.setFontSize(10);
+                      doc.setTextColor(100);
+                      doc.text("MEDIA VERIFICATION REPORT", 20, 28);
+                      
+                      doc.setDrawColor(200);
+                      doc.line(20, 32, 190, 32);
+                      
+                      // Content
+                      doc.setFontSize(12);
+                      doc.setTextColor(0);
+                      doc.text(`REPORT ID: ${reportId}`, 20, 45);
+                      doc.text(`USER Account: ${profile?.email || 'N/A'}`, 20, 52);
+                      doc.text(`VERIFICATION DATE: ${new Date().toLocaleString()}`, 20, 59);
+                      
+                      doc.setFontSize(14);
+                      doc.text("VERDICT: VIOLATION DETECTED", 20, 75);
+                      
+                      doc.setFontSize(10);
+                      doc.text(`MATCH CONFIDENCE: ${result?.confidence || 'N/A'}`, 20, 85);
+                      doc.text(`ACTION: ${result?.recommendedAction || 'N/A'}`, 20, 92);
+                      doc.text(`SIMILARITY SCORE: ${(result?.similarityScore ? result.similarityScore * 100 : 0).toFixed(2)}%`, 20, 99);
+                      
+                      doc.setFontSize(11);
+                      doc.text("ANALYSIS SUMMARY:", 20, 115);
+                      const summary = doc.splitTextToSize(result?.aiExplanation || "Automated vector analysis complete.", 160);
+                      doc.text(summary, 20, 122);
+                      
+                      doc.text("TRANSFORMATIONS DETECTED:", 20, 150);
+                      doc.text(result?.transformation.join(', ') || 'None', 20, 157);
+                      
+                      // Footer
+                      doc.setFontSize(8);
+                      doc.setTextColor(150);
+                      doc.text("Security Document. Authorized Personnel Only.", 20, 280);
+                      
+                      doc.save(`Verification_Report_${reportId}.pdf`);
+                      detectionService.addNotification(`Forensic Report ${reportId} for ${profile?.email} has been generated.`);
+                    } catch (err) {
+                      console.error("PDF build error", err);
+                      detectionService.addNotification("Failed to generate PDF. Check console.");
+                    } finally {
+                      setIsGeneratingReport(false);
+                    }
                   }}
                   disabled={isGeneratingReport}
                   className="w-full bg-[#0A0A0B] text-emerald-400 font-black py-4 rounded-2xl flex items-center justify-center gap-2 mt-8 group transition-all hover:bg-black/90 active:scale-95 disabled:opacity-50 disabled:cursor-wait"
